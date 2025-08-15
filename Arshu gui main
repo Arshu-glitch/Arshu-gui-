@@ -1,16 +1,14 @@
---// Advanced Sectioned GUI Menu Template
---// Works with Studio & most Executors
+--// Arshu GUI Menu (Full Fixed Version)
 
 local parentGui = (gethui and gethui()) or game:GetService("CoreGui")
-local setClipboard = setclipboard or toclipboard -- Clipboard function
 
 -- ScreenGui
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "SectionedMenu"
+screenGui.Name = "ArshuMenu"
 screenGui.Parent = parentGui
 screenGui.ResetOnSpawn = false
 
--- Draggable Arrow Button
+-- Arrow Button
 local arrowButton = Instance.new("TextButton")
 arrowButton.Size = UDim2.new(0, 40, 0, 40)
 arrowButton.Position = UDim2.new(0, 10, 0.5, -20)
@@ -40,160 +38,160 @@ titleLabel.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 titleLabel.Font = Enum.Font.SourceSansBold
 titleLabel.TextSize = 20
-titleLabel.Text = "Custom Cheat Menu"
+titleLabel.Text = "Arshu GUI"
 titleLabel.Parent = mainFrame
 Instance.new("UICorner", titleLabel)
 
--- Tabs Holder
-local tabsFrame = Instance.new("Frame")
-tabsFrame.Size = UDim2.new(1, 0, 0, 35)
-tabsFrame.Position = UDim2.new(0, 0, 0, 40)
-tabsFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-tabsFrame.Parent = mainFrame
+-- Close Button
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -35, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Font = Enum.Font.SourceSansBold
+closeButton.TextSize = 18
+closeButton.Parent = mainFrame
+Instance.new("UICorner", closeButton)
 
--- Content Frame
-local contentFrame = Instance.new("Frame")
-contentFrame.Size = UDim2.new(1, 0, 1, -75)
-contentFrame.Position = UDim2.new(0, 0, 0, 75)
-contentFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-contentFrame.Parent = mainFrame
-Instance.new("UICorner", contentFrame)
+closeButton.MouseButton1Click:Connect(function()
+    mainFrame.Visible = false
+    arrowButton.Text = "→"
+end)
 
--- Function to switch tabs
-local currentTab
-local function switchTab(tabName)
-    for _, child in ipairs(contentFrame:GetChildren()) do
-        if child:IsA("Frame") then
-            child.Visible = (child.Name == tabName)
-        end
-    end
-end
+-- Tabs container
+local tabs = Instance.new("Frame")
+tabs.Size = UDim2.new(0, 100, 1, -40)
+tabs.Position = UDim2.new(0, 0, 0, 40)
+tabs.BackgroundTransparency = 1
+tabs.Parent = mainFrame
 
--- Function to create tab buttons
-local function createTabButton(name, order)
+-- Tab Button Creator
+local function createTabButton(name, order, callback)
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.33, 0, 1, 0)
-    btn.Position = UDim2.new((order-1) * 0.33, 0, 0, 0)
+    btn.Size = UDim2.new(1, 0, 0, 30)
+    btn.Position = UDim2.new(0, 0, 0, (order - 1) * 35)
     btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.Font = Enum.Font.SourceSans
     btn.TextSize = 16
     btn.Text = name
-    btn.Parent = tabsFrame
+    btn.Parent = tabs
     Instance.new("UICorner", btn)
 
-    btn.MouseButton1Click:Connect(function()
-        switchTab(name)
-    end)
+    btn.MouseButton1Click:Connect(callback)
+    return btn
 end
 
--- INTRODUCTION TAB
-local introFrame = Instance.new("Frame")
-introFrame.Size = UDim2.new(1, 0, 1, 0)
-introFrame.BackgroundTransparency = 1
-introFrame.Name = "Introduction"
-introFrame.Parent = contentFrame
+-- Content Frame
+local contentFrame = Instance.new("Frame")
+contentFrame.Size = UDim2.new(1, -100, 1, -40)
+contentFrame.Position = UDim2.new(0, 100, 0, 40)
+contentFrame.BackgroundTransparency = 1
+contentFrame.Parent = mainFrame
 
-local introLabel = Instance.new("TextLabel")
-introLabel.Size = UDim2.new(1, -20, 0, 50)
-introLabel.Position = UDim2.new(0, 10, 0, 10)
-introLabel.BackgroundTransparency = 1
-introLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-introLabel.Font = Enum.Font.SourceSans
-introLabel.TextSize = 18
-introLabel.TextWrapped = true
-introLabel.Text = "yo im arshu, js a testing gui menu for universal op, any bug contact me on discrod or telegram or inatagram, link on about "
-introLabel.Parent = introFrame
+-- Clear content
+local function clearContent()
+    for _, v in ipairs(contentFrame:GetChildren()) do
+        if v:IsA("GuiObject") then
+            v:Destroy()
+        end
+    end
+end
 
--- CHEATS TAB
-local cheatsFrame = Instance.new("ScrollingFrame")
-cheatsFrame.Size = UDim2.new(1, 0, 1, 0)
-cheatsFrame.CanvasSize = UDim2.new(0, 0, 0, 300)
-cheatsFrame.ScrollBarThickness = 5
-cheatsFrame.Name = "Cheats"
-cheatsFrame.Parent = contentFrame
+-- Introduction Tab
+local function showIntroduction()
+    clearContent()
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.Text = "yo im arshu, this is under testing if you have any bug, contact us on Instagram or telegram or discrod links are in about"
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 18
+    label.Font = Enum.Font.SourceSans
+    label.BackgroundTransparency = 1
+    label.TextWrapped = true
+    label.Parent = contentFrame
+end
 
-local function createCheatButton(name, scriptCode)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -20, 0, 35)
-    btn.Position = UDim2.new(0, 10, 0, (#cheatsFrame:GetChildren() - 1) * 40)
-    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Font = Enum.Font.SourceSans
-    btn.TextSize = 18
-    btn.Text = name
-    btn.Parent = cheatsFrame
-    Instance.new("UICorner", btn)
+-- Cheats Tab
+local function showCheats()
+    clearContent()
+    local y = 0
+    local function createCheatButton(name, scriptCode)
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(1, -20, 0, 35)
+        btn.Position = UDim2.new(0, 10, 0, y)
+        btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.Font = Enum.Font.SourceSans
+        btn.TextSize = 18
+        btn.Text = name
+        btn.Parent = contentFrame
+        Instance.new("UICorner", btn)
 
-    btn.MouseButton1Click:Connect(function()
-        local success, err = pcall(function()
-            loadstring(scriptCode)()
+        btn.MouseButton1Click:Connect(function()
+            local success, err = pcall(function()
+                loadstring(scriptCode)()
+            end)
+            if not success then
+                warn("Error running " .. name .. ": " .. err)
+            end
         end)
-        if not success then
-            warn("Error running " .. name .. ": " .. err)
-        end
-    end)
-end
+        y = y + 40
+    end
 
-createCheatButton("ESP", [[
+    createCheatButton("ESP", [[
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Mautiku/ehh/main/Hight%20light%20esp%20and%20more.txt",true))()
-]])
-
-createCheatButton("Aimlock", [[
+    ]])
+    createCheatButton("Aimlock", [[
 loadstring(game:HttpGet("https://raw.githubusercontent.com/yzeedw/Mortalv2-main/main/UNIVERSAL%20AIMBOT%20V2"))()
-]])
-
-createCheatButton("Dash", [[
+  ]])
+    createCheatButton("Dash", [[
 loadstring(game:HttpGet('https://raw.githubusercontent.com/Mautiku/ehh/main/FE%20DASH.txt'))()
-]])
-
-createCheatButton("Invisible Tool", [[
+    ]])
+    createCheatButton("Invisible Tool", [[
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Mautiku/ehh/main/invisible%20tool.txt",true))()
-]])
-
--- ABOUT TAB
-local aboutFrame = Instance.new("Frame")
-aboutFrame.Size = UDim2.new(1, 0, 1, 0)
-aboutFrame.BackgroundTransparency = 1
-aboutFrame.Name = "About"
-aboutFrame.Parent = contentFrame
-
-local function createLinkButton(name, link)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -20, 0, 35)
-    btn.Position = UDim2.new(0, 10, 0, (#aboutFrame:GetChildren()) * 40)
-    btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Font = Enum.Font.SourceSans
-    btn.TextSize = 18
-    btn.Text = name
-    btn.Parent = aboutFrame
-    Instance.new("UICorner", btn)
-
-    btn.MouseButton1Click:Connect(function()
-        if setClipboard then
-            setClipboard(link)
-            print(name .. " link copied: " .. link)
-        else
-            warn("Clipboard function not available in this executor.")
-        end
-    end)
+    ]])
 end
 
-createLinkButton("Discord", "coming soon")
-createLinkButton("WhatsApp", "coming soon")
-createLinkButton("Instagram", "coming soon")
+-- About Tab
+local function showAbout()
+    clearContent()
+    local links = {
+        {name = "Discord", link = "coming soon"},
+        {name = "Instagram", link = "coming soon"},
+        {name = "WhatsApp", link = "coming soon"}
+    }
+    local y = 0
+    for _, v in ipairs(links) do
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(1, -20, 0, 35)
+        btn.Position = UDim2.new(0, 10, 0, y)
+        btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.Font = Enum.Font.SourceSans
+        btn.TextSize = 18
+        btn.Text = v.name
+        btn.Parent = contentFrame
+        Instance.new("UICorner", btn)
+
+        btn.MouseButton1Click:Connect(function()
+            setclipboard(v.link)
+        end)
+        y = y + 40
+    end
+end
 
 -- Create Tabs
-createTabButton("Introduction", 1)
-createTabButton("Cheats", 2)
-createTabButton("About", 3)
+createTabButton("Introduction", 1, showIntroduction)
+createTabButton("Cheats", 2, showCheats)
+createTabButton("About", 3, showAbout)
 
--- Start on Introduction tab
-switchTab("Introduction")
-
--- Toggle menu visibility
+-- Arrow Toggle
 arrowButton.MouseButton1Click:Connect(function()
     mainFrame.Visible = not mainFrame.Visible
     arrowButton.Text = mainFrame.Visible and "←" or "→"
+    if mainFrame.Visible then
+        showIntroduction()
+    end
 end)
